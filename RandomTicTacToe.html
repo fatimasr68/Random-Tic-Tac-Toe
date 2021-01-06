@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TIC TAC TOE</title>
+<meta charset="UTF-8">
+<style>
+
+
+
+body{
+	font-family:monospace;
+	background-color: #fff;
+	color:#006080;
+	direction:rtl;
+	box-shadow: 0 0 60px #9c0;
+}
+.text-center{
+	text-align:center;
+}
+
+.title{
+	font-size:2rem;
+	float:left;
+	//padding-bottom:30px;
+	font-weight:bold;
+}
+.score{
+	float:right;
+	font-size:2rem;
+	//padding-bottom:30px;
+	font-weight:bold;
+}
+.tictactoe-board{
+	width:470px;
+	height: 490px;
+	margin:0px auto;
+}
+.board-row{
+	clear:both;
+	margin:0px auto;
+	border-bottom:5px solid #2eb8b8;
+}
+.board-row:first-of-type{
+	border-bottom:0px;
+}
+.board-cell{
+	float:left;
+	font-size:8rem;
+	font-weight:600;
+	padding: 0px 28px 0px 28px;
+	cursor:pointer;
+	//color:#ff00aa;
+	
+	width: 95px;
+	height: 146px;
+	line-height:153px;
+	text-align:center;
+}
+.board-row > .board-cell{
+	border-right:5px solid #2eb8b8;
+}
+.board-row > .board-cell:last-of-type{
+	border-right:0px;
+}
+.message{
+	clear: both;
+	padding-top: 5px;
+	font-size: 23px;
+	direction: ltr;
+	text-align: center;
+	font-weight: 600;
+}
+
+#count, #speed {
+	text-align: center;
+	height: 32px;
+	font-size: 14px;
+	color: red;
+	font-weight: 600;
+	vertical-align: bottom;
+	border: 1px solid #2eb8b8;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+#speed {
+	margin-bottom: 35px;
+}
+
+.result{
+	width:100%;
+	margin:10px auto 20px;
+	border-collapse: separate;
+    border-spacing: 0;
+	table-layout: fixed;
+	font-size:20px;
+	text-align:center;
+	margin-top:80px;
+}
+.result thead {
+	background:#2eb8b8;
+	color: #fff;
+	font-weight:600;
+}
+.result td {
+	border:2px solid #0a9494;
+	height:50px;
+}
+
+#start, #stop{
+	width:120px;
+	height:38px;
+	text-align:center;
+	font-size:14px;
+	background:#2eb8b8;
+	color:#fff;
+	border: 1px solid #2eb8b8;
+	font-weight:600;
+	cursor:pointer;
+	transition:0.4s;
+}
+
+#start:hover, #stop:hover {
+	background:#fff;
+	color:#2eb8b8;
+	border: 1px solid #2eb8b8;
+}
+
+.topdiv{
+	height: 44px;
+	padding: 10px 16px;
+	box-shadow: 0 0 65px #9c0 inset;
+	margin-bottom: 21px;
+}
+.div{
+	display:inline-block;
+	width:48%;
+	height:500px;
+	vertical-align:top;
+}
+
+@media screen and (max-width:900px) {
+	
+	.div{
+		width:100%!important;
+		display:block!important;
+	}
+}
+
+
+</style>
+
+	<script src="jquery.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="topdiv">
+	<div class="title">TIC TAC TOE</div>
+	
+	
+
+	<div class="score"> X:<span class="playerScore">0</span>&nbsp;&nbsp;&nbsp;  O:<span class="computerScore">0</span></div>
+</div>
+
+	
+<div class="div">
+	<div class="tictactoe-board">
+
+		
+		<script>
+		
+			for (var i = 0; i < 3; i++) {
+			
+				document.write('<div class="board-row">');
+				
+				for (var j = 0; j < 3; j++) {
+				
+					document.write('<div class="board-cell cell-');
+					document.write(i +'-' + j);
+					document.write( '">' + "&nbsp" +'</div>');
+					
+				};
+				
+				document.write('</div>');
+				
+			};
+			
+			
+		</script>
+		
+	</div>
+	
+	
+</div>	
+	
+
+<div class="div">
+	<div class="message">
+		
+		<div style="text-align:left;">
+			<label for="c" style="font-size:18px;">Number of Repetition: <label>
+			<input type="textbox" name="c" id="count" />
+		</div>
+		
+		<div style="text-align:left;">
+			<label for="s" style="font-size:18px;">Time (ms): <label>
+			<input type="textbox" name="s" id="speed" />
+		</div>
+		
+		<div>
+			<input type="button" id="stop" value="STOP" />
+			<input type="button" id="start" value="START" />
+		</div>
+		
+		
+		<table class="result">	
+			<thead>
+				<td>Repetition</td>
+				<td>X</td>
+				<td>O</td>
+				<td>Equal</td>
+			</thead>
+
+			<tr>	
+				<td class="count"></td>
+				<td class="Xw"></td>
+				<td class="Ow"></td>
+				<td class="tie"></td>	
+			</tr>			
+		</table>
+	
+	
+	</div>	
+</div>
+
+		
+
+	
+<script>	
+		
+		var playerChoice = "X";
+		var playerScore = 0;
+		var computerChoice = "O";
+		var computerScore = 0;
+
+		
+	 	// Place an item.
+		$(document).ready(function(){
+			
+		var Xw = 0;
+		var Ow = 0;
+		var tie = 0;
+
+
+	
+	var counter = 0;
+
+	$('#start').click(function(){
+	
+		var speed = $('#speed').val();
+		
+		
+		var looper = setInterval(
+		
+		function(){ 
+
+
+		var count = $('#count').val();
+
+
+		counter++;
+	
+
+		for (var i = 0 ; i < 9; i++) {
+
+			for (var j = 0; j < 9; j++) { // i++ needs to be j++
+						
+
+			var numbers = new Array('O','X');
+			randomP = (numbers[Math.floor(Math.random()*numbers.length)]);
+							
+				
+			$('.cell-' + i + '-' + j).html(randomP);
+			
+			if(randomP == "X")
+			{
+				$('.cell-' + i + '-' + j).css("color", "#ff0080");
+			}
+			else
+			{
+				$('.cell-' + i + '-' + j).css("color", "#99e600");
+			}	 
+
+		}
+	}
+		
+		
+		
+		playerScore = checkWin("X");	
+		computerScore = checkWin("O");	
+		
+		$('.playerScore').html(playerScore);
+		
+		$('.computerScore').html(computerScore);
+		
+		
+		if(checkWin("X") > checkWin("O"))
+		{
+			Xw++;
+		}
+		else if(checkWin("O") > checkWin("X"))
+		{
+			Ow++;
+		}
+		else
+		{
+			tie++;
+		}
+		
+		
+		
+		$('.Xw').html(Xw);
+		$('.Ow').html(Ow);
+		$('.tie').html(tie);
+	
+	
+	
+	
+	
+    $('.count').html(counter);
+
+	
+    if (counter >= count)
+    {
+        clearInterval(looper);
+    }
+
+	
+	$('#stop').click(function(){		
+		
+		clearInterval(looper);
+		
+	});	
+	
+	
+	}, speed);		   
+
+	
+	
+	
+	});
+
+
+		
+
+
+	
+
+
+
+
+
+
+
+	
+		   
+ }); //documentReady
+
+
+ 
+ 
+		
+ 
+		// x will be whoevers hit spots you are checking
+	    function checkWin(x){
+		
+	    	var win = false;
+			
+			var match=0;
+			
+	    	//check horizontal
+	    	if ($('.cell-0-0').text() == x
+	    	 && $('.cell-0-1').text() == x
+	    	 && $('.cell-0-2').text() == x ||
+	    	 	$('.cell-1-0').text() == x
+	    	 && $('.cell-1-1').text() == x
+	    	 && $('.cell-1-2').text() == x ||
+	    	 	$('.cell-2-0').text() == x
+	    	 && $('.cell-2-1').text() == x
+	    	 && $('.cell-2-2').text() == x) {
+				
+				match++;
+				
+	    		win = true;
+	    	};
+	    	//check vertical 
+	    	if ($('.cell-0-0').text() == x
+	    	 && $('.cell-1-0').text() == x
+	    	 && $('.cell-2-0').text() == x ||
+	    	 	$('.cell-0-1').text() == x
+	    	 && $('.cell-1-1').text() == x
+	    	 && $('.cell-2-1').text() == x ||
+	    	 	$('.cell-0-2').text() == x
+	    	 && $('.cell-1-2').text() == x
+	    	 && $('.cell-2-2').text() == x) {
+				
+				match++;
+								
+	    		win = true;
+	    	};
+	    	//check diagnal 
+	    	if ($('.cell-0-0').text() == x
+	    	 && $('.cell-1-1').text() == x
+	    	 && $('.cell-2-2').text() == x ||
+	    	 	$('.cell-0-2').text() == x
+	    	 && $('.cell-1-1').text() == x
+	    	 && $('.cell-2-0').text() == x) {
+				
+				match++;
+								
+	    		win = true;
+	    	};
+	    	//return
+	    	return match;
+	    }
+
+	    //clear the board
+	    function resetBoard(){
+	    	$('.board-cell').html('&nbsp;');
+	    }
+
+	    function checkTie(){
+	    	var tie = false;
+	    	if ($('.cell-0-0').html() != "&nbsp;" 
+	    	&&  $('.cell-0-1').html() != "&nbsp;"
+	    	&&  $('.cell-0-2').html() != "&nbsp;"
+	    	&&  $('.cell-1-0').html() != "&nbsp;"
+	    	&&  $('.cell-1-1').html() != "&nbsp;"
+	    	&&  $('.cell-1-2').html() != "&nbsp;"
+	    	&&  $('.cell-2-0').html() != "&nbsp;"
+	    	&&  $('.cell-2-1').html() != "&nbsp;"
+	    	&&  $('.cell-2-2').html() != "&nbsp;") {
+		    	$('.message-text').text("مساوی");	    		
+	    		tie = true;
+	    	};
+	    	return tie;
+	    }
+	    //computers random number
+		function getRandomInt(min, max) {
+    		return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		
+</script>	
+
+
+
+
+
+
+
+<div class="title" style="width:100%;font-size:25px;margin-top:8px;margin-left:16px;color:#0a9494;text-align:center;">Fateme Souri Seyedlar</div>
+	
+</body>	
+
+
+
+			
+</html>		
+		
+		
+		
+		
+		
+		
+		
+		
+		
